@@ -34,10 +34,10 @@ bool Shop::init()
     auto csb = CSLoader::createNode("ShopScene.csb");
     this->addChild(csb);
     
-    goodsDesVec.push_back(Value("炸药.购买以后,当抓到较重且金额不多的物品时,按下上方炸药即可炸毁物品,以便节省时间.功效为下一关"));
-    goodsDesVec.push_back(Value("力量药水.购买以后,在下一关力量会增加,抓到物品后拉回速度会增加20%.功效为下一关"));
-    goodsDesVec.push_back(Value("优质矿石.购买后在下一关中收购钻石的价格将变成原价格的3倍,但不保证下一关一定会有钻石~其效果为下一关"));
-    goodsDesVec.push_back(Value("矿石收藏书.购买后下一关的矿石的价格将会是原有价格的3倍,其功效为下一关"));
+    goodsDesVec.push_back(Value("Khi luom dc may hon da thi quang no "));
+    goodsDesVec.push_back(Value("Tang 20% the luc"));
+    goodsDesVec.push_back(Value("Mua cai nay kim cuong cua  tiep theo tang 300% gia tri"));
+    goodsDesVec.push_back(Value("Mua cai nay tang 3 lan gia tien quang cua tiep theo"));
 
     goodsDesText = static_cast<Text *>(Helper::seekWidgetByName(static_cast<Widget *>(csb), "shopDetail"));
     Text *userMoney = static_cast<Text *>(Helper::seekWidgetByName(static_cast<Widget *>(csb), "userMoney"));
