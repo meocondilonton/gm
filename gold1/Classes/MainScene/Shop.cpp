@@ -34,16 +34,17 @@ bool Shop::init()
     auto csb = CSLoader::createNode("ShopScene.csb");
     this->addChild(csb);
     
-    goodsDesVec.push_back(Value("炸药.购买以后,当抓到较重且金额不多的物品时,按下上方炸药即可炸毁物品,以便节省时间.功效为下一关"));
-    goodsDesVec.push_back(Value("力量药水.购买以后,在下一关力量会增加,抓到物品后拉回速度会增加20%.功效为下一关"));
-    goodsDesVec.push_back(Value("优质矿石.购买后在下一关中收购钻石的价格将变成原价格的3倍,但不保证下一关一定会有钻石~其效果为下一关"));
-    goodsDesVec.push_back(Value("矿石收藏书.购买后下一关的矿石的价格将会是原有价格的3倍,其功效为下一关"));
+    goodsDesVec.push_back(Value("Explosives.When pulling the unwanted things, touch at the explosives to blow up them"));
+    goodsDesVec.push_back(Value(" Tonic . Miners will pull heavy  20% faster .Just effect in next level"));
+    goodsDesVec.push_back(Value("Polished diamonds. In next level,diamond will increase by 300%  value.Just effect in next level"));
+    goodsDesVec.push_back(Value("Stones Collection, Stones will increase 300% in the next level.Just effect in next level"));
 
     goodsDesText = static_cast<Text *>(Helper::seekWidgetByName(static_cast<Widget *>(csb), "shopDetail"));
     Text *userMoney = static_cast<Text *>(Helper::seekWidgetByName(static_cast<Widget *>(csb), "userMoney"));
     userMoney->setString("$" + to_string(UserDataManager::getInstance()->getAllMoney()));
     
     Button *buyButton = static_cast<Button *>(Helper::seekWidgetByName(static_cast<Widget *>(csb), "buyButton"));
+    buyButton->setTitleText("Buy");
     buyButton->addTouchEventListener([=](Ref *sender, Widget::TouchEventType type){
         if (type == Widget::TouchEventType::ENDED) {
             int index = lastSelected->getTag() - 1;
@@ -78,8 +79,11 @@ bool Shop::init()
         }
     });
     
+    
+    this->getname(static_cast<Widget *>(csb));
     // addAction
     Button *nextButton = static_cast<Button *>(Helper::seekWidgetByName(static_cast<Widget *>(csb), "nextButton"));
+      nextButton->setTitleText("Next");
     nextButton->addTouchEventListener([=](Ref *sender, Widget::TouchEventType type){
         if (type == Widget::TouchEventType::ENDED) {
             // next Stage
@@ -106,6 +110,32 @@ bool Shop::init()
     }
     
     return true;
+}
+
+Widget* Shop::getname(Widget* root){
+    if (!root)
+    {
+        return nullptr;
+    }
+    
+    const auto& arrayRootChildren = root->getChildren();
+    for (auto& subWidget : arrayRootChildren)
+    {
+        Widget* child = dynamic_cast<Widget*>(subWidget);
+        if (child)
+        {
+            const std::string str =  child->getName();
+            CCLOG("%s", "getname");
+            CCLOG("%s", str.c_str());
+            Widget* res = getname(child);
+          
+            if (res != nullptr)
+            {
+                return res;
+            }
+        }
+    }
+    return nullptr;
 }
 
 void Shop::selectedGoodsButton(cocos2d::Ref *sender, Widget::TouchEventType type)
