@@ -44,6 +44,18 @@ bool Shop::init()
     Text *userMoney = static_cast<Text *>(Helper::seekWidgetByName(static_cast<Widget *>(csb), "userMoney"));
     userMoney->setString("$" + to_string(UserDataManager::getInstance()->getAllMoney()));
     
+    Text *text0 = static_cast<Text *>(Helper::seekWidgetByName(static_cast<Widget *>(csb), "Text_2"));
+    text0->setString("Gold");
+//    Text *text1 = static_cast<Text *>(Helper::seekWidgetByName(static_cast<Widget *>(csb), "200"));
+//    text1->setString("200");
+//    Text *text2 = static_cast<Text *>(Helper::seekWidgetByName(static_cast<Widget *>(csb), "200_0"));
+//    text2->setString("200_0");
+//    Text *text3 = static_cast<Text *>(Helper::seekWidgetByName(static_cast<Widget *>(csb), "200_0_0"));
+//    text3->setString("200_0_0");
+//    Text *text4 = static_cast<Text *>(Helper::seekWidgetByName(static_cast<Widget *>(csb), "200_0_0_0"));
+//    text4->setString("200_0_0_0");
+   
+    
     Button *buyButton = static_cast<Button *>(Helper::seekWidgetByName(static_cast<Widget *>(csb), "buyButton"));
     buyButton->setTitleText("Buy");
     buyButton->addTouchEventListener([=](Ref *sender, Widget::TouchEventType type){
