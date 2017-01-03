@@ -33,11 +33,12 @@ bool Shop::init()
     
     auto csb = CSLoader::createNode("ShopScene.csb");
     this->addChild(csb);
-    
+ 
     goodsDesVec.push_back(Value("Explosives.When pulling the unwanted things, touch at the explosives to blow up them"));
     goodsDesVec.push_back(Value(" Tonic . Miners will pull heavy  20% faster .Just effect in next level"));
     goodsDesVec.push_back(Value("Polished diamonds. In next level,diamond will increase by 300%  value.Just effect in next level"));
     goodsDesVec.push_back(Value("Stones Collection, Stones will increase 300% in the next level.Just effect in next level"));
+ 
 
     goodsDesText = static_cast<Text *>(Helper::seekWidgetByName(static_cast<Widget *>(csb), "shopDetail"));
     Text *userMoney = static_cast<Text *>(Helper::seekWidgetByName(static_cast<Widget *>(csb), "userMoney"));
