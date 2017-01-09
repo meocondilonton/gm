@@ -79,6 +79,8 @@ void MainLayer::onEnter()
     SoundTool::getInstance()->playBackgroundMusic("res/music/backMusic.mp3");
 }
 
+
+
 void MainLayer::startButtonTouch(cocos2d::Ref *sender, Widget::TouchEventType type)
 {
     if (type == Widget::TouchEventType::ENDED) {

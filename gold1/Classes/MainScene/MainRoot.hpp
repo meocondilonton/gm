@@ -34,6 +34,7 @@ private:
     
 #pragma mark - Action
     void startButtonTouch(Ref *sender, Widget::TouchEventType type);
+   
 };
 
 #endif /* MainRoot_hpp */

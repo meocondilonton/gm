@@ -21,7 +21,7 @@ Scene *Shop::createScene()
     
     auto shopLayer = Shop::create();
     scene->addChild(shopLayer);
-    
+ 
     return scene;
 }
 
@@ -33,7 +33,7 @@ bool Shop::init()
     
     auto csb = CSLoader::createNode("ShopScene.csb");
     this->addChild(csb);
- 
+    this->remakeContentSence(static_cast<Widget *>(csb));
     goodsDesVec.push_back(Value("Explosives.When pulling the unwanted things, touch at the explosives to blow up them"));
     goodsDesVec.push_back(Value(" Tonic . Miners will pull heavy  20% faster .Just effect in next level"));
     goodsDesVec.push_back(Value("Polished diamonds. In next level,diamond will increase by 300%  value.Just effect in next level"));
@@ -41,20 +41,13 @@ bool Shop::init()
  
 
     goodsDesText = static_cast<Text *>(Helper::seekWidgetByName(static_cast<Widget *>(csb), "shopDetail"));
-    Text *userMoney = static_cast<Text *>(Helper::seekWidgetByName(static_cast<Widget *>(csb), "userMoney"));
-    userMoney->setString("$" + to_string(UserDataManager::getInstance()->getAllMoney()));
-    
+ 
     Text *text0 = static_cast<Text *>(Helper::seekWidgetByName(static_cast<Widget *>(csb), "Text_2"));
     text0->setString("Gold");
-//    Text *text1 = static_cast<Text *>(Helper::seekWidgetByName(static_cast<Widget *>(csb), "200"));
-//    text1->setString("200");
-//    Text *text2 = static_cast<Text *>(Helper::seekWidgetByName(static_cast<Widget *>(csb), "200_0"));
-//    text2->setString("200_0");
-//    Text *text3 = static_cast<Text *>(Helper::seekWidgetByName(static_cast<Widget *>(csb), "200_0_0"));
-//    text3->setString("200_0_0");
-//    Text *text4 = static_cast<Text *>(Helper::seekWidgetByName(static_cast<Widget *>(csb), "200_0_0_0"));
-//    text4->setString("200_0_0_0");
-   
+    
+    Text *userMoney = static_cast<Text *>(Helper::seekWidgetByName(static_cast<Widget *>(csb), "userMoney"));
+    userMoney->setString("$" + to_string(UserDataManager::getInstance()->getAllMoney()));
+ 
     
     Button *buyButton = static_cast<Button *>(Helper::seekWidgetByName(static_cast<Widget *>(csb), "buyButton"));
     buyButton->setTitleText("Buy");
@@ -93,7 +86,7 @@ bool Shop::init()
     });
     
     
-    this->getname(static_cast<Widget *>(csb));
+  
     // addAction
     Button *nextButton = static_cast<Button *>(Helper::seekWidgetByName(static_cast<Widget *>(csb), "nextButton"));
       nextButton->setTitleText("Next");
@@ -125,27 +118,38 @@ bool Shop::init()
     return true;
 }
 
-Widget* Shop::getname(Widget* root){
+Widget* Shop::remakeContentSence(Widget* root){
     if (!root)
     {
         return nullptr;
     }
+    const std::string str =  root->getName();
+    
     
     const auto& arrayRootChildren = root->getChildren();
     for (auto& subWidget : arrayRootChildren)
     {
+        const std::string str =  subWidget->getName();
+       
+        if (subWidget->getName() == "tip_5") {
+            for(auto& aGrandChildNode : subWidget->getChildren())
+            {
+                const std::string str =  aGrandChildNode->getName();
+                if (str == "Text_1") {
+                    static_cast<Text *>(aGrandChildNode)->setString("Click on the items you want to buy.Click on Next when you are ready to go on.");
+ 
+                }
+                return nullptr;
+            }
+            
+        }
+        
         Widget* child = dynamic_cast<Widget*>(subWidget);
         if (child)
         {
             const std::string str =  child->getName();
-            CCLOG("%s", "getname");
-            CCLOG("%s", str.c_str());
-            Widget* res = getname(child);
-          
-            if (res != nullptr)
-            {
-                return res;
-            }
+             remakeContentSence(child);
+  
         }
     }
     return nullptr;

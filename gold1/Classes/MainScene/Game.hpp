@@ -72,6 +72,7 @@ private:
     bool touchCallBack(Touch *touch, Event *event);
     bool physicsBegin(PhysicsContact &contact);
     void pullGold(PhysicsContact &contact);
+      Widget*  getname(Widget* root);
 };
 
 #endif /* Game_hpp */

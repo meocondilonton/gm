@@ -71,6 +71,8 @@ bool Game::init(bool isBuyBomb, bool isBuyPotion, bool isBuyDiamonds, bool isSto
     this->isBuyDiamonds = isBuyDiamonds;
     this->isBuyStoneBook = isStoneBook;
     
+   
+    
     bompButton = static_cast<Button *>(Helper::seekWidgetByName(static_cast<Widget *>(csb), "BompButton"));
     bompButton->setVisible(isBuyBomb);
     bompButton->addTouchEventListener([=](Ref *ref, Widget::TouchEventType type){
@@ -146,6 +148,42 @@ bool Game::init(bool isBuyBomb, bool isBuyPotion, bool isBuyDiamonds, bool isSto
     loadStageInfo();
 
     return true;
+}
+
+Widget* Game::getname(Widget* root){
+    if (!root)
+    {
+        return nullptr;
+    }
+    const std::string str =  root->getName();
+    CCLOG("%s", "getname");
+    CCLOG("%s", str.c_str());
+    CCLOG("%s",  typeid(*root).name());
+    
+    const auto& arrayRootChildren = root->getChildren();
+    for (auto& subWidget : arrayRootChildren)
+    {
+        const std::string str =  subWidget->getName();
+        CCLOG("%s", "getname");
+        CCLOG("%s", str.c_str());
+        CCLOG("%s",  typeid(*subWidget).name());
+ 
+        
+        Widget* child = dynamic_cast<Widget*>(subWidget);
+        if (child)
+        {
+            const std::string str =  child->getName();
+            CCLOG("%s", "getname");
+            CCLOG("%s", str.c_str());
+            Widget* res = getname(child);
+            
+            //            if (res != nullptr)
+            //            {
+            //                return res;
+            //            }
+        }
+    }
+    return nullptr;
 }
 
 bool Game::physicsBegin(cocos2d::PhysicsContact &contact)
@@ -270,9 +308,31 @@ void Game::setUpText(Widget *csb)
     int stageIndex = userManager->getStageNum();
     allMoney->setString(to_string(userManager->getAllMoney() - curPayMoney));
     stageNum->setString(to_string(stageIndex));
+    stageNum->setAnchorPoint(Vec2(0.25, 0.5));
+    
     time->setString("60");
     passScroe = 650 + 275 * (stageIndex - 1) + 410 * (stageIndex - 1);
     targetMoney->setString(to_string(passScroe));
+    targetMoney->setPosition(Vec2(targetMoney->getPositionX() - 60 ,targetMoney->getPositionY()));
+    
+    Text *Text_1 = static_cast<Text *>(Helper::seekWidgetByName(static_cast<Widget *>(csb), "Text_1"));
+    Text_1->setString("Gold:\n");
+    
+    Text *Text_1_0 = static_cast<Text *>(Helper::seekWidgetByName(static_cast<Widget *>(csb), "Text_1_0"));
+    Text_1_0->setString("Goal:\n");
+    
+    Text *Text_1_1 = static_cast<Text *>(Helper::seekWidgetByName(static_cast<Widget *>(csb), "Text_1_1"));
+    Text_1_1->setString("Time:\n");
+    
+    Text *Text_1_1_0 = static_cast<Text *>(Helper::seekWidgetByName(static_cast<Widget *>(csb), "Text_1_1_0"));
+    Text_1_1_0->setString("Level:\n");
+    
+    Text *Text_8_0 = static_cast<Text *>(Helper::seekWidgetByName(static_cast<Widget *>(csb), "Text_8_0"));
+   
+    Text_8_0->setAnchorPoint(Vec2(0.5, 0.5));
+    Text_8_0->setString("Pause\n");
+    
+     this->getname(csb);
 }
 
 void Game::onEnter()

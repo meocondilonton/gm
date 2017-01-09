@@ -29,6 +29,7 @@ private:
     
     void updateMusicButton();
     void updateSoundButton();
+   
 };
 
 #endif /* Pause_hpp */

@@ -18,7 +18,7 @@ public:
     static Scene * createScene();
     virtual bool init();
     CREATE_FUNC(Shop);
-    Widget*  getname(Widget* root);
+    Widget*  remakeContentSence(Widget* root);
 private:
     Vector<ImageView *>buyOnes;
     ValueVector goodsDesVec;

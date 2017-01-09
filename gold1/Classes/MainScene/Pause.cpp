@@ -36,6 +36,9 @@ bool Pause::init(bool nextBtnCanClick)
             _eventDispatcher->dispatchCustomEvent("nextStage");
         }
     });
+   
+    Text *Text_1 = static_cast<Text *>(Helper::seekWidgetByName(static_cast<Widget *>(csb), "Text_1"));
+    Text_1->setString("Shop");
     
     Button *backStage = static_cast<Button *>(Helper::seekWidgetByName(static_cast<Widget *>(csb), "backStage"));
     backStage->addTouchEventListener([=](Ref *sender, Widget::TouchEventType type) {
@@ -43,7 +46,11 @@ bool Pause::init(bool nextBtnCanClick)
             Director::getInstance()->replaceScene(MainLayer::createScene());
         }
     });
+ 
+    Text *Text_1_0 = static_cast<Text *>(Helper::seekWidgetByName(static_cast<Widget *>(csb), "Text_1_0"));
+    Text_1_0->setString("Menu");
     
+ 
     Button *cancelButton = static_cast<Button *>(Helper::seekWidgetByName(static_cast<Widget *>(csb), "cancelButton"));
     cancelButton->addTouchEventListener([=](Ref *sender, Widget::TouchEventType type) {
         if (type == Widget::TouchEventType::ENDED) {
@@ -53,9 +60,11 @@ bool Pause::init(bool nextBtnCanClick)
             this->removeFromParentAndCleanup(true);
         }
     });
+   
         
     return true;
 }
+
 
 void Pause::updateMusicButton()
 {

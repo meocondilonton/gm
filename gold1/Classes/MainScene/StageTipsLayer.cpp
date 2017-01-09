@@ -23,11 +23,11 @@ bool StageTipsLayer::init(int stageNum)
     image = static_cast<ImageView *>( Helper::seekWidgetByName(csb, "image"));
     stageNumText = static_cast<Text *>( Helper::seekWidgetByName(csb, "stageNum"));
     
-    string stageNumStr = "关卡  " + to_string(stageNum);
+    string stageNumStr = "Level  " + to_string(stageNum);
     stageNumText->setString(stageNumStr);
     stageNumText->setOpacity(0);
     
-    string passScroe = "目标分数  " + to_string(650 + 275 * (stageNum - 1) + 410 * (stageNum - 1));
+    string passScroe = "Gold Target  " + to_string(650 + 275 * (stageNum - 1) + 410 * (stageNum - 1));
     passScoreText = static_cast<Text *>( Helper::seekWidgetByName(csb, "passScore"));
     passScoreText->setString(passScroe);
     
@@ -116,7 +116,8 @@ bool StageFailOrSucessLayer::init(StageFailOrSucessLayer::TipsType type, int gol
     
     if (type == TipsType::FAIL) {
         auto *failText = Helper::seekWidgetByName(static_cast<Widget *>(csb), "FailText");
-        
+        static_cast<Text *>(failText)->setString("Fail!, You did not reach the target!");
+           CCLOG("%s", static_cast<Text *>(failText)->getString().c_str());
         auto seqe = Sequence::create(MoveTo::create(0.3, Vec2(kWinSizeWidth * 0.5, kWinSizeHeight * 0.5)), DelayTime::create(2.5), CallFuncN::create([=](Node *node){
             
             Director::getInstance()->replaceScene(MainLayer::createScene());
@@ -127,7 +128,7 @@ bool StageFailOrSucessLayer::init(StageFailOrSucessLayer::TipsType type, int gol
     } else {
         auto *sucessText = Helper::seekWidgetByName(static_cast<Widget *>(csb), "passStage");
         auto *goldCountText = Helper::seekWidgetByName(static_cast<Widget *>(csb), "goldCount");
-        (static_cast<Text *>(goldCountText))->setString("本关挖到的金币为: " + to_string(goldCount));
+        (static_cast<Text *>(goldCountText))->setString("Good Miner, you get: " + to_string(goldCount));
 
         auto move = MoveTo::create(0.3, Vec2(kWinSizeWidth * 0.5, kWinSizeHeight * 0.6));
         sucessText->runAction(move);
