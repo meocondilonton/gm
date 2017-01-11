@@ -227,6 +227,29 @@ void Game::loadStageInfo()
         goldBody->setContactTestBitmask(10);
         subNode->addComponent(goldBody);
     }
+    
+    //create  animation mouse
+    auto mouse = cocos2d::Sprite::create();
+    Vector<SpriteFrame*> animFrames(8);
+    char str[100] = {0};
+    for(int i = 0; i < 8; i++)
+    {
+        sprintf(str, "gem-mouse-%d.png",i);
+        auto frame = SpriteFrameCache::getInstance()->getSpriteFrameByName(str);
+        //SpriteFrame::create(str,Rect(0,0,60,50)); //we assume that the sprites' dimentions are 40*40 rectangles.
+        animFrames.pushBack(frame);
+    }
+    
+    auto animation = Animation::createWithSpriteFrames(animFrames, 0.2f);
+    auto animate = Animate::create(animation);
+    mouse->runAction(RepeatForever::create(animate));
+    
+    auto movement = MoveTo::create(10, Vec2(2148,620));
+    auto resetPosition = MoveTo::create(0, Vec2(-150,620));
+    auto sequence = Sequence::create(movement, resetPosition, NULL);
+    mouse->runAction(RepeatForever::create(sequence));
+    
+     this->addChild(mouse);
 }
 
 void Game::pullGold(cocos2d::PhysicsContact &contact)
