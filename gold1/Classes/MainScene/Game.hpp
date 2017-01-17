@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include "Const.hpp"
 #include "Gold.hpp"
+#include "Mouse.hpp"
 
 class Game : public Layer {
     

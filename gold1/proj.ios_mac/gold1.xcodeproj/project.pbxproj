@@ -75,6 +75,7 @@
 		FD5F1FAD1E14ECB4007620FC /* AppDelegate.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FD5F1F9F1E14ECB4007620FC /* AppDelegate.cpp */; };
 		FD5F1FAE1E14ECB4007620FC /* UserDataManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FD5F1FA21E14ECB4007620FC /* UserDataManager.cpp */; };
 		FD5F1FAF1E14ECB4007620FC /* SoundTool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FD5F1FA51E14ECB4007620FC /* SoundTool.cpp */; };
+		FD820DA71E2DBF5C00DF47A2 /* Mouse.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FD820DA51E2DBF5C00DF47A2 /* Mouse.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -192,6 +193,8 @@
 		FD5F1FA31E14ECB4007620FC /* UserDataManager.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = UserDataManager.hpp; sourceTree = "<group>"; };
 		FD5F1FA51E14ECB4007620FC /* SoundTool.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SoundTool.cpp; sourceTree = "<group>"; };
 		FD5F1FA61E14ECB4007620FC /* SoundTool.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = SoundTool.hpp; sourceTree = "<group>"; };
+		FD820DA51E2DBF5C00DF47A2 /* Mouse.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Mouse.cpp; sourceTree = "<group>"; };
+		FD820DA61E2DBF5C00DF47A2 /* Mouse.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Mouse.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -387,6 +390,8 @@
 		FD5F1F911E14ECB4007620FC /* MainScene */ = {
 			isa = PBXGroup;
 			children = (
+				FD820DA51E2DBF5C00DF47A2 /* Mouse.cpp */,
+				FD820DA61E2DBF5C00DF47A2 /* Mouse.hpp */,
 				FD5F1F921E14ECB4007620FC /* Game.cpp */,
 				FD5F1F931E14ECB4007620FC /* Game.hpp */,
 				FD5F1F941E14ECB4007620FC /* Gold.cpp */,
@@ -577,6 +582,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FD820DA71E2DBF5C00DF47A2 /* Mouse.cpp in Sources */,
 				FD5F1FA91E14ECB4007620FC /* MainRoot.cpp in Sources */,
 				503AE10017EB989F00D1A890 /* AppController.mm in Sources */,
 				FD5F1FAD1E14ECB4007620FC /* AppDelegate.cpp in Sources */,

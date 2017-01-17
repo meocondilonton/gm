@@ -15,6 +15,8 @@
 #include "Shop.hpp"
 
 #define kWorldTag 1000
+#define tagGold 100
+#define tagMouse 200
 
 Scene *Game::createScene(bool isBuyBomb, bool isBuyPotion, bool isBuyDiamonds, bool isStoneBook, int payMoney)
 {
@@ -226,48 +228,54 @@ void Game::loadStageInfo()
         goldBody->setCollisionBitmask(10);
         goldBody->setContactTestBitmask(10);
         subNode->addComponent(goldBody);
+        subNode->setTag(tagGold);
     }
     
+    Vector<Sprite *> arrMouse(3);
     //create  animation mouse
-    auto mouse = cocos2d::Sprite::create();
-    Vector<SpriteFrame*> animFrames(8);
-    char str[100] = {0};
-    for(int i = 0; i < 8; i++)
-    {
-        sprintf(str, "gem-mouse-%d.png",i);
-        auto frame = SpriteFrameCache::getInstance()->getSpriteFrameByName(str);
-        //SpriteFrame::create(str,Rect(0,0,60,50)); //we assume that the sprites' dimentions are 40*40 rectangles.
-        animFrames.pushBack(frame);
-    }
+    auto mouse = Mouse::create(1, 1, 0, true, true, true, Mouse::MouseType::EMPTYMOUSE);
+    this->addChild(mouse);
+    arrMouse.pushBack(mouse);
     
-    auto animation = Animation::createWithSpriteFrames(animFrames, 0.2f);
-    auto animate = Animate::create(animation);
-    mouse->runAction(RepeatForever::create(animate));
+    auto mousegame = Mouse::create(1, 1, 0, true, true, true, Mouse::MouseType::MOUSEWITHDIAMOND);
+    this->addChild(mousegame);
+    arrMouse.pushBack(mousegame);
     
-    auto movement = MoveTo::create(10, Vec2(2148,620));
-    auto resetPosition = MoveTo::create(0, Vec2(-150,620));
-    auto sequence = Sequence::create(movement, resetPosition, NULL);
-    mouse->runAction(RepeatForever::create(sequence));
+    auto mousepull = Mouse::create(1, 1, 0, true, true, true, Mouse::MouseType::MOUSECATCH);
+    this->addChild(mousepull);
+    arrMouse.pushBack(mousepull);
     
-     this->addChild(mouse);
+//    for (Sprite *subNode : arrMouse) {
+//        Size bodySize = Size(subNode->getContentSize().width * subNode->getScaleX(), subNode->getContentSize().height * subNode->getScaleY());
+//        PhysicsBody *mouseBody = PhysicsBody::createEdgeBox(bodySize);
+//        mouseBody->setCategoryBitmask(10);
+//        mouseBody->setCollisionBitmask(10);
+//        mouseBody->setContactTestBitmask(10);
+//        subNode->addComponent(mouseBody);
+//        subNode->setTag(tagMouse);
+//    }
+    
 }
 
 void Game::pullGold(cocos2d::PhysicsContact &contact)
 {
     // 钓到了东西
-    isOpenHook = true;
-    
-    auto gold = contact.getShapeB()->getBody()->getNode();
-    
-    goldSprite = Gold::create(gold->getName(), gold->getScaleX(), gold->getScaleY(), gold->getRotation(), isBuyPotion, isBuyDiamonds, isBuyStoneBook);
-    middleCircle->addChild(goldSprite);
-    contact.getShapeB()->getBody()->removeFromWorld();
-    this->backSpeed = goldSprite->backSpeed;
-    leftHook->runAction(RotateTo::create(0.05, -goldSprite->hookRote));
-    rightHook->runAction(RotateTo::create(0.05, goldSprite->hookRote));
-    
-    gold->getPhysicsBody()->setEnabled(false);
-    gold->setVisible(false);
+   
+    if( contact.getShapeB()->getBody()->getNode()->getTag() == tagGold){
+         isOpenHook = true;
+        auto gold = contact.getShapeB()->getBody()->getNode();
+        
+        goldSprite = Gold::create(gold->getName(), gold->getScaleX(), gold->getScaleY(), gold->getRotation(), isBuyPotion, isBuyDiamonds, isBuyStoneBook);
+        middleCircle->addChild(goldSprite);
+        contact.getShapeB()->getBody()->removeFromWorld();
+        this->backSpeed = goldSprite->backSpeed;
+        leftHook->runAction(RotateTo::create(0.05, -goldSprite->hookRote));
+        rightHook->runAction(RotateTo::create(0.05, goldSprite->hookRote));
+        
+        gold->getPhysicsBody()->setEnabled(false);
+        gold->setVisible(false);
+    }
+   
 }
 
 void Game::subRopeHeight(float dt)
