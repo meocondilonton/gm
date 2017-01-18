@@ -17,6 +17,9 @@
 #define kWorldTag 1000
 #define tagGold 100
 #define tagMouse 200
+#define tagHook 59
+#define tagMiddleCircle 500
+
 
 Scene *Game::createScene(bool isBuyBomb, bool isBuyPotion, bool isBuyDiamonds, bool isStoneBook, int payMoney)
 {
@@ -190,17 +193,24 @@ Widget* Game::getname(Widget* root){
 
 bool Game::physicsBegin(cocos2d::PhysicsContact &contact)
 {
-    if (contact.getShapeB()->getBody()->getNode()->getTag() != kWorldTag) {
-        // 碰到金块, 打开钩子
-        if (!isOpenHook) {
-            this->pullGold(contact);
+    CCLOG("physicsBegin Btag: %d",contact.getShapeB()->getBody()->getNode()->getTag());
+     CCLOG("physicsBegin Atag: %d",contact.getShapeA()->getBody()->getNode()->getTag());
+
+    if(contact.getShapeB()->getBody()->getNode()->getTag() == tagHook ||
+       contact.getShapeA()->getBody()->getNode()->getTag() == tagHook  ){
+        if (contact.getShapeB()->getBody()->getNode()->getTag() != kWorldTag) {
+            // 碰到金块, 打开钩子
+            if (!isOpenHook) {
+                this->pullGold(contact);
+            }
+        } else {
+            this->backSpeed = 10;
         }
-    } else {
-        this->backSpeed = 10;
+        
+        this->unschedule(CC_SCHEDULE_SELECTOR(Game::addRopeHeight));
+        this->schedule(CC_SCHEDULE_SELECTOR(Game::subRopeHeight), 0.025);
     }
     
-    this->unschedule(CC_SCHEDULE_SELECTOR(Game::addRopeHeight));
-    this->schedule(CC_SCHEDULE_SELECTOR(Game::subRopeHeight), 0.025);
     
     return true;
 }
@@ -245,23 +255,25 @@ void Game::loadStageInfo()
     this->addChild(mousepull);
     arrMouse.pushBack(mousepull);
     
-//    for (Sprite *subNode : arrMouse) {
-//        Size bodySize = Size(subNode->getContentSize().width * subNode->getScaleX(), subNode->getContentSize().height * subNode->getScaleY());
-//        PhysicsBody *mouseBody = PhysicsBody::createEdgeBox(bodySize);
-//        mouseBody->setCategoryBitmask(10);
-//        mouseBody->setCollisionBitmask(10);
-//        mouseBody->setContactTestBitmask(10);
-//        subNode->addComponent(mouseBody);
-//        subNode->setTag(tagMouse);
-//    }
+    for (Sprite *subNode : arrMouse) {
+        Size bodySize = Size(subNode->getContentSize().width * subNode->getScaleX(), subNode->getContentSize().height * subNode->getScaleY());
+        PhysicsBody *mouseBody = PhysicsBody::createEdgeBox(bodySize);
+        mouseBody->setCategoryBitmask(10);
+        mouseBody->setCollisionBitmask(10);
+        mouseBody->setContactTestBitmask(10);
+        subNode->addComponent(mouseBody);
+        subNode->setTag(tagMouse);
+    }
     
 }
 
 void Game::pullGold(cocos2d::PhysicsContact &contact)
 {
     // 钓到了东西
-   
-    if( contact.getShapeB()->getBody()->getNode()->getTag() == tagGold){
+//    CCLOG("tag: %d",contact.getShapeB()->getBody()->getNode()->getTag());
+    if((contact.getShapeB()->getBody()->getNode()->getTag() == tagGold && (contact.getShapeA()->getBody()->getNode()->getTag() == tagHook   )) ||
+       (contact.getShapeA()->getBody()->getNode()->getTag() == tagGold && (contact.getShapeB()->getBody()->getNode()->getTag() == tagHook   ))
+       ){
          isOpenHook = true;
         auto gold = contact.getShapeB()->getBody()->getNode();
         
@@ -274,6 +286,8 @@ void Game::pullGold(cocos2d::PhysicsContact &contact)
         
         gold->getPhysicsBody()->setEnabled(false);
         gold->setVisible(false);
+        
+//          CCLOG("intag: %d",contact.getShapeB()->getBody()->getNode()->getTag());
     }
    
 }
@@ -363,7 +377,7 @@ void Game::setUpText(Widget *csb)
     Text_8_0->setAnchorPoint(Vec2(0.5, 0.5));
     Text_8_0->setString("Pause\n");
     
-     this->getname(csb);
+//     this->getname(csb);
 }
 
 void Game::onEnter()
