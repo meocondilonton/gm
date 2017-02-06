@@ -75,61 +75,74 @@ bool Gold::init(string name, float scaleX, float scaleY, float rotate, bool isBu
         backSpeed = kSmallGoldBackSpeed * power;
         hookRote = 16;
         this->setPosition(7.52, -21.24);
+        this->goldType = GoldType::SMALLGOLD;
     } else if (name == "gold-0-0.png" && scale == 65) {
         hookRote = 36;
         score = kMiddleGoldScore;
         backSpeed = kMiddleGolBackSpeed * power;
         this->setPosition(2.86, -36.33);
+        this->goldType = GoldType::MIDDLEGOLD;
     } else if (name == "pulled-gold-1-0.png" && scale == 40) {
         score = kSmallGoldScore;
         backSpeed = kSmallGoldBackSpeed * power;
         hookRote = 12;
         this->setPosition(7.81, -24.17);
+        this->goldType = GoldType::SMALLGOLD;
     } else if (name == "pulled-gold-1-0.png" && scale == 65) {
         hookRote = 25;
         score = kMiddleGoldScore;
         backSpeed = kMiddleGolBackSpeed * power;
         this->setPosition(8.51, -35.43);
+        this->goldType = GoldType::MIDDLEGOLD;
     } else if (name == "pulled-gold-0-0.png" && scale == 90) {
         hookRote = 35;
         score = kBigGoldScore;
         backSpeed = kBigGoldBackSpeed * power;
+        this->goldType = GoldType::BIGGOLD;
         this->setPosition(5.2, -48.17);
     } else if (name == "gold-1-6.png" && scale == 90) {
         hookRote = 35;
         score = kBigGoldScore;
         backSpeed = kBigGoldBackSpeed * power;
         this->setPosition(10.83, -44.7);
+         this->goldType = GoldType::BIGGOLD;
     } else if (name == "gold-0-1.png" && scale == 65) {
         hookRote = 30;
         score = kMiddleGoldScore;
         backSpeed = kMiddleGolBackSpeed * power;
         this->setPosition(5.66, -34.47);
+         this->goldType = GoldType::MIDDLEGOLD;
     } else if (name == "treasure-bag.png") {
         hookRote = 5;
         score = kBagScore;
         backSpeed = kBagBackSpeed * power;
         this->setPosition(6.31, -33.65);
+        this->goldType = GoldType::GOLDBAG;
+        
     } else if (name == "stone-0.png" && scale == 80) {
         hookRote = 15;
         score = kSmallStoneScore * stoneCoe;
         backSpeed = kSmallStoneBackSpeed * power;
         this->setPosition(5.8, -26.07);
+         this->goldType = GoldType::SMALLSTONE;
     } else if (name == "stone-1.png" && scale == 100) {
         hookRote = 30;
         score = kMiddleStoneScore * stoneCoe;
         backSpeed = kMiddleStoneBackSpeed * power;
         this->setPosition(8.56, -29.8);
+         this->goldType = GoldType::MIDDLESTONE;
     } else if (name == "stone-0.png" && scale == 150) {
         hookRote = 30;
         score = kBigStoneScore * stoneCoe;
         backSpeed = kBigStoneBackSpeed * power;
         this->setPosition(5.27, -42.01);
+         this->goldType = GoldType::BIGSTONE;
     } else if (name == "diamond.png") {
         hookRote = 6;
         score = kDiamondScore * diamondsCoe;
         backSpeed = kDiamondSpeed * power;
         this->setPosition(6.38, -26.91);
+        this->goldType = GoldType::DIAMONDS;
     } else {
         hookRote = 0;
         backSpeed = 10;

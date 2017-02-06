@@ -15,19 +15,19 @@
 class Gold : public Sprite{
     
 public:
-//    enum class GoldType
-//    {
-//        SMALLGOLD = 101,
-//        MIDDLEGOLD,
-//        BIGGOLD,
-//        SMALLSTONE,
-//        MIDDLESTONE,
-//        BIGSTONE,
-//        GOLDBAG,
-//        DIAMONDS
-//    };
-//    
-//    GoldType type;
+    enum class GoldType
+    {
+        SMALLGOLD = 101,
+        MIDDLEGOLD,
+        BIGGOLD,
+        SMALLSTONE,
+        MIDDLESTONE,
+        BIGSTONE,
+        GOLDBAG,
+        DIAMONDS
+    };
+    
+    GoldType goldType;
     float hookRote;
     int score;
     int backSpeed;

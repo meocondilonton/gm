@@ -21,6 +21,28 @@
 #define tagMiddleCircle 500
 
 
+// Score
+#define kMouseScore 100
+#define kSmallGoldScore 100
+#define kMiddleGoldScore 200
+#define kBigGoldScore 400
+#define kSmallStoneScore 25
+#define kMiddleStoneScore 50
+#define kBigStoneScore 75
+#define kDiamondScore 500
+#define kBagScore (arc4random_uniform(200) + 50)
+
+// Speed
+#define kSmallGoldBackSpeed 3
+#define kMiddleGolBackSpeed 2
+#define kBigGoldBackSpeed 1.5
+#define kSmallStoneBackSpeed 3
+#define kMiddleStoneBackSpeed 2
+#define kBigStoneBackSpeed 1.5
+#define kBagBackSpeed 3
+#define kDiamondSpeed 3
+
+
 Scene *Game::createScene(bool isBuyBomb, bool isBuyPotion, bool isBuyDiamonds, bool isStoneBook, int payMoney)
 {
     Scene *scene = Scene::createWithPhysics();
@@ -193,8 +215,8 @@ Widget* Game::getname(Widget* root){
 
 bool Game::physicsBegin(cocos2d::PhysicsContact &contact)
 {
-    CCLOG("physicsBegin Btag: %d",contact.getShapeB()->getBody()->getNode()->getTag());
-     CCLOG("physicsBegin Atag: %d",contact.getShapeA()->getBody()->getNode()->getTag());
+//    CCLOG("physicsBegin Btag: %d",contact.getShapeB()->getBody()->getNode()->getTag());
+//     CCLOG("physicsBegin Atag: %d",contact.getShapeA()->getBody()->getNode()->getTag());
 
     if(contact.getShapeB()->getBody()->getNode()->getTag() == tagHook ||
        contact.getShapeA()->getBody()->getNode()->getTag() == tagHook  ){
@@ -202,6 +224,7 @@ bool Game::physicsBegin(cocos2d::PhysicsContact &contact)
             // 碰到金块, 打开钩子
             if (!isOpenHook) {
                 this->pullGold(contact);
+                this->pullMouse(contact);
             }
         } else {
             this->backSpeed = 10;
@@ -209,6 +232,10 @@ bool Game::physicsBegin(cocos2d::PhysicsContact &contact)
         
         this->unschedule(CC_SCHEDULE_SELECTOR(Game::addRopeHeight));
         this->schedule(CC_SCHEDULE_SELECTOR(Game::subRopeHeight), 0.025);
+    }else{
+          if (contact.getShapeB()->getBody()->getNode()->getTag() != kWorldTag) {
+              this->mouseColision(contact);
+          }
     }
     
     
@@ -243,15 +270,15 @@ void Game::loadStageInfo()
     
     Vector<Sprite *> arrMouse(3);
     //create  animation mouse
-    auto mouse = Mouse::create(1, 1, 0, true, true, true, Mouse::MouseType::EMPTYMOUSE);
+    auto mouse = Mouse::create(1, 1, true, true, true, Mouse::MouseType::EMPTYMOUSE , Mouse::DirectionType::LEFT);
     this->addChild(mouse);
     arrMouse.pushBack(mouse);
     
-    auto mousegame = Mouse::create(1, 1, 0, true, true, true, Mouse::MouseType::MOUSEWITHDIAMOND);
+    auto mousegame = Mouse::create(1, 1,  true, true, true, Mouse::MouseType::MOUSEWITHDIAMOND , Mouse::DirectionType::RIGHT);
     this->addChild(mousegame);
     arrMouse.pushBack(mousegame);
     
-    auto mousepull = Mouse::create(1, 1, 0, true, true, true, Mouse::MouseType::MOUSECATCH);
+    auto mousepull = Mouse::create(1, 1, true, true, true, Mouse::MouseType::MOUSECATCH ,  Mouse::DirectionType::LEFT);
     this->addChild(mousepull);
     arrMouse.pushBack(mousepull);
     
@@ -266,6 +293,62 @@ void Game::loadStageInfo()
     }
     
 }
+
+
+void Game::mouseColision(cocos2d::PhysicsContact &contact)
+{
+    CCLOG("physicsBegin Btag: %d",contact.getShapeB()->getBody()->getNode()->getTag());
+    CCLOG("physicsBegin Atag: %d",contact.getShapeA()->getBody()->getNode()->getTag());
+
+    if(contact.getShapeB()->getBody()->getNode()->getTag() == tagMouse && contact.getShapeA()->getBody()->getNode()->getTag() != tagMouse )
+        {
+             auto mouse = contact.getShapeB()->getBody()->getNode();
+            if(contact.getShapeA()->getBody()->getNode()->getTag() == tagGold){
+                 auto gold = contact.getShapeA()->getBody()->getNode();
+                if( dynamic_cast<Gold*>(gold)->goldType == Gold::GoldType::DIAMONDS){
+                    dynamic_cast<Mouse*>(mouse)->getDiamond();
+                }
+            }else{
+                 dynamic_cast<Mouse*>(mouse)->goBack();
+            }
+            
+            
+            
+        }else if(contact.getShapeB()->getBody()->getNode()->getTag() != tagMouse && contact.getShapeA()->getBody()->getNode()->getTag() == tagMouse){
+            auto mouse = contact.getShapeA()->getBody()->getNode();
+            dynamic_cast<Mouse*>(mouse)->goBack();
+        }
+    
+}
+
+void Game::pullMouse(cocos2d::PhysicsContact &contact)
+{
+    
+    if((contact.getShapeB()->getBody()->getNode()->getTag() == tagMouse && (contact.getShapeA()->getBody()->getNode()->getTag() == tagHook   )) ||
+       (contact.getShapeA()->getBody()->getNode()->getTag() == tagMouse && (contact.getShapeB()->getBody()->getNode()->getTag() == tagHook   ))
+       ){
+        isOpenHook = true;
+        auto mouse = contact.getShapeB()->getBody()->getNode();
+        
+        mouseSprite =  Mouse::create(1, 1, true, true, true, Mouse::MouseType::MOUSECATCH , Mouse::DirectionType::LEFT);
+        middleCircle->addChild(mouseSprite);
+        contact.getShapeB()->getBody()->removeFromWorld();
+        this->backSpeed = mouseSprite->backSpeed;
+        if( dynamic_cast<Mouse*>(mouse)->type == Mouse::MouseType::EMPTYMOUSE){
+            mouseSprite->score  = kMouseScore;
+        }else if(dynamic_cast<Mouse*>(mouse)->type == Mouse::MouseType::MOUSEWITHDIAMOND){
+             mouseSprite->score  = (kMouseScore + kDiamondScore) *  mouseSprite->diamondsCoe;
+        }
+        leftHook->runAction(RotateTo::create(0.05, -mouseSprite->hookRote));
+        rightHook->runAction(RotateTo::create(0.05, mouseSprite->hookRote));
+        
+        mouse->getPhysicsBody()->setEnabled(false);
+        mouse->setVisible(false);
+        
+    }
+    
+}
+
 
 void Game::pullGold(cocos2d::PhysicsContact &contact)
 {
@@ -334,6 +417,33 @@ void Game::subRopeHeight(float dt)
                 // 加分
                 goldSprite->removeFromParent();
                 goldSprite = nullptr;
+            }
+            
+            //pull mouse
+            if (mouseSprite != nullptr) {
+                // 加分动画
+                Label *scoreLabel = Label::create();
+                scoreLabel->setColor(Color3B(50, 200, 0));
+                scoreLabel->setSystemFontSize(25);
+                scoreLabel->setString(to_string(mouseSprite->score));
+                scoreLabel->setPosition(rope->convertToWorldSpace(middleCircle->getPosition()));
+                this->addChild(scoreLabel, 1000);
+                
+                SoundTool::getInstance()->playEffect("res/music/laend.mp3");
+                
+                curStageScore += mouseSprite->score;
+                auto spawn = Spawn::create(MoveTo::create(0.5, Vec2(allMoney->getPosition().x + 10, allMoney->getPosition().y)), Sequence::create(ScaleTo::create(0.25, 3), ScaleTo::create(0.25, 0.1), NULL), NULL);
+                auto seque = Sequence::create(spawn, CallFuncN::create([=](Node *node){
+                    
+                    scoreLabel->removeFromParent();
+                    allMoney->setString(to_string(curStageScore + UserDataManager::getInstance()->getAllMoney() - curPayMoney));
+                    
+                }),NULL);
+                scoreLabel->runAction(seque);
+                
+                // 加分
+                mouseSprite->removeFromParent();
+                mouseSprite = nullptr;
             }
         }
     }

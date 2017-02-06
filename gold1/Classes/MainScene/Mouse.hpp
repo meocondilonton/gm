@@ -11,6 +11,9 @@
 
 #include <stdio.h>
 #include "Const.hpp"
+#include <cstdlib>
+#include <ctime>
+#include <iostream>
 
 class Mouse : public Sprite{
     
@@ -23,19 +26,36 @@ public:
        
     };
     
+    enum class DirectionType
+    {
+        LEFT = 1,
+        RIGHT,
+    };
+    
+    DirectionType directionType;
     MouseType type;
     float hookRote;
     int score;
     int backSpeed;
-    
-    static Mouse *create(  float scaleX, float scaleY, float rotate, bool isBuyPotion, bool isBuyDiamonds, bool isStoneBook , MouseType type);
-    virtual bool init(  float scaleX, float scaleY,  float rotate, bool isBuyPotion, bool isBuyDiamonds, bool isStoneBook  , MouseType type);
-    
-private:
-    
     int stoneCoe = 1;
     int diamondsCoe = 1;
     int power = 1;
+    
+    static Mouse *create(  float scaleX, float scaleY , bool isBuyPotion, bool isBuyDiamonds, bool isStoneBook , MouseType type ,  DirectionType direction);
+    virtual bool init(  float scaleX, float scaleY,   bool isBuyPotion, bool isBuyDiamonds, bool isStoneBook  , MouseType type , DirectionType direction);
+    void goBack();
+    void getDiamond();
+    void createAnimation(MouseType type );
+    void randomPositionY( );
+    
+private:
+    
+   
+    int random_Width;
+    int random_Height ;
+    int start_x;
+    int end_x;
+    
 };
 
 #endif /* Gold_hpp */

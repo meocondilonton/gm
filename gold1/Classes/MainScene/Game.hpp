@@ -46,6 +46,7 @@ private:
     bool isOpenHook;
     
     Gold *goldSprite;
+    Mouse *mouseSprite;
     
     bool isBuyPotion;
     bool isBuyDiamonds;
@@ -73,6 +74,9 @@ private:
     bool touchCallBack(Touch *touch, Event *event);
     bool physicsBegin(PhysicsContact &contact);
     void pullGold(PhysicsContact &contact);
+    void pullMouse(PhysicsContact &contact);
+    void mouseColision(PhysicsContact &contact);
+    
       Widget*  getname(Widget* root);
 };
 
