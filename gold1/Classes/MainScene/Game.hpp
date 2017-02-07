@@ -78,6 +78,8 @@ private:
     void mouseColision(PhysicsContact &contact);
     
       Widget*  getname(Widget* root);
+    
+    Vector<Sprite *> arrMouse ;
 };
 
 #endif /* Game_hpp */

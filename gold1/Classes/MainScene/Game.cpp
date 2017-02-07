@@ -233,7 +233,8 @@ bool Game::physicsBegin(cocos2d::PhysicsContact &contact)
         this->unschedule(CC_SCHEDULE_SELECTOR(Game::addRopeHeight));
         this->schedule(CC_SCHEDULE_SELECTOR(Game::subRopeHeight), 0.025);
     }else{
-          if (contact.getShapeB()->getBody()->getNode()->getTag() != kWorldTag) {
+          if (contact.getShapeB()->getBody()->getNode()->getTag() != kWorldTag
+              && contact.getShapeA()->getBody()->getNode()->getTag() != kWorldTag) {
               this->mouseColision(contact);
           }
     }
@@ -258,6 +259,8 @@ void Game::loadStageInfo()
     // 所有金块
     auto goldsLayout = Helper::seekWidgetByName(static_cast<Widget *>(goldCsb), "goldPanel");
     Vector<Node *> golds = goldsLayout->getChildren();
+//    this->getname(goldsLayout);
+
     for (Node *subNode : golds) {
         Size bodySize = Size(subNode->getContentSize().width * subNode->getScaleX(), subNode->getContentSize().height * subNode->getScaleY());
         PhysicsBody *goldBody = PhysicsBody::createEdgeBox(bodySize);
@@ -265,10 +268,15 @@ void Game::loadStageInfo()
         goldBody->setCollisionBitmask(10);
         goldBody->setContactTestBitmask(10);
         subNode->addComponent(goldBody);
-        subNode->setTag(tagGold);
+//        subNode->setTag(tagGold);
+//         CCLOG("Gold name: %s",contact.getShapeB()->getBody()->getNode()->getTag());
+        Gold *temp = dynamic_cast<Gold*>(subNode);
+        if (temp != nullptr) {
+        temp->setTag(tagGold);
+        }
     }
     
-    Vector<Sprite *> arrMouse(3);
+   this->arrMouse = Vector<Sprite *>();
     //create  animation mouse
     auto mouse = Mouse::create(1, 1, true, true, true, Mouse::MouseType::EMPTYMOUSE , Mouse::DirectionType::LEFT);
     this->addChild(mouse);
@@ -278,9 +286,22 @@ void Game::loadStageInfo()
     this->addChild(mousegame);
     arrMouse.pushBack(mousegame);
     
-    auto mousepull = Mouse::create(1, 1, true, true, true, Mouse::MouseType::MOUSECATCH ,  Mouse::DirectionType::LEFT);
-    this->addChild(mousepull);
-    arrMouse.pushBack(mousepull);
+    
+    auto mouse2 = Mouse::create(1, 1, true, true, true, Mouse::MouseType::EMPTYMOUSE , Mouse::DirectionType::LEFT);
+    this->addChild(mouse2);
+    arrMouse.pushBack(mouse2);
+    
+    auto mousegame2 = Mouse::create(1, 1,  true, true, true, Mouse::MouseType::MOUSEWITHDIAMOND , Mouse::DirectionType::RIGHT);
+    this->addChild(mousegame2);
+    arrMouse.pushBack(mousegame2);
+    
+    auto mouse3 = Mouse::create(1, 1, true, true, true, Mouse::MouseType::EMPTYMOUSE , Mouse::DirectionType::RIGHT);
+    this->addChild(mouse3);
+    arrMouse.pushBack(mouse3);
+    
+    auto mouse4 = Mouse::create(1, 1, true, true, true, Mouse::MouseType::EMPTYMOUSE , Mouse::DirectionType::RIGHT);
+    this->addChild(mouse4);
+    arrMouse.pushBack(mouse4);
     
     for (Sprite *subNode : arrMouse) {
         Size bodySize = Size(subNode->getContentSize().width * subNode->getScaleX(), subNode->getContentSize().height * subNode->getScaleY());
@@ -303,20 +324,45 @@ void Game::mouseColision(cocos2d::PhysicsContact &contact)
     if(contact.getShapeB()->getBody()->getNode()->getTag() == tagMouse && contact.getShapeA()->getBody()->getNode()->getTag() != tagMouse )
         {
              auto mouse = contact.getShapeB()->getBody()->getNode();
-            if(contact.getShapeA()->getBody()->getNode()->getTag() == tagGold){
-                 auto gold = contact.getShapeA()->getBody()->getNode();
-                if( dynamic_cast<Gold*>(gold)->goldType == Gold::GoldType::DIAMONDS){
-                    dynamic_cast<Mouse*>(mouse)->getDiamond();
-                }
-            }else{
+            auto gold = contact.getShapeA()->getBody()->getNode();
+            Gold *temp = dynamic_cast<Gold*>(gold);
+              if (temp != nullptr) {
+            if(  dynamic_cast<Mouse*>(mouse)->type == Mouse::MouseType::EMPTYMOUSE){
+                    if( temp->goldType == Gold::GoldType::DIAMONDS){
+                        dynamic_cast<Mouse*>(mouse)->getDiamond();
+                        gold->getPhysicsBody()->setEnabled(false);
+                        gold->setVisible(false);
+                    }
+                } else{
                  dynamic_cast<Mouse*>(mouse)->goBack();
             }
-            
-            
+           }
+    
             
         }else if(contact.getShapeB()->getBody()->getNode()->getTag() != tagMouse && contact.getShapeA()->getBody()->getNode()->getTag() == tagMouse){
             auto mouse = contact.getShapeA()->getBody()->getNode();
-            dynamic_cast<Mouse*>(mouse)->goBack();
+            auto gold = contact.getShapeB()->getBody()->getNode();
+            Gold *temp = dynamic_cast<Gold*>(gold);
+            if (temp != nullptr) {
+                if(   dynamic_cast<Mouse*>(mouse)->type == Mouse::MouseType::EMPTYMOUSE){
+                    
+                        if( temp->goldType == Gold::GoldType::DIAMONDS){
+                            dynamic_cast<Mouse*>(mouse)->getDiamond();
+                            gold->getPhysicsBody()->setEnabled(false);
+                            gold->setVisible(false);
+                        }
+                }else{
+                    dynamic_cast<Mouse*>(mouse)->goBack();
+                }
+            }
+            
+            
+        }else if(contact.getShapeB()->getBody()->getNode()->getTag() == tagMouse && contact.getShapeA()->getBody()->getNode()->getTag() == tagMouse){
+             auto mouse = contact.getShapeA()->getBody()->getNode();
+             dynamic_cast<Mouse*>(mouse)->goBack();
+            
+            auto mouseB = contact.getShapeB()->getBody()->getNode();
+            dynamic_cast<Mouse*>(mouseB)->goBack();
         }
     
 }

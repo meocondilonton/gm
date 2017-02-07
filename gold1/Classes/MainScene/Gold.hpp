@@ -27,18 +27,18 @@ public:
         DIAMONDS
     };
     
-    GoldType goldType;
+    GoldType goldType = GoldType::SMALLSTONE;
     float hookRote;
     int score;
     int backSpeed;
-    
+     int diamondsCoe = 1;
     static Gold *create(string name, float scaleX, float scaleY, float rotate, bool isBuyPotion, bool isBuyDiamonds, bool isStoneBook);
     virtual bool init(string name, float scaleX, float scaleY,  float rotate, bool isBuyPotion, bool isBuyDiamonds, bool isStoneBook);
     
 private:
     
     int stoneCoe = 1;
-    int diamondsCoe = 1;
+   
     int power = 1;
 };
 

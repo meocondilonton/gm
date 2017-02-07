@@ -147,6 +147,7 @@ bool Gold::init(string name, float scaleX, float scaleY, float rotate, bool isBu
         hookRote = 0;
         backSpeed = 10;
         score = 0;
+         this->goldType = GoldType::SMALLSTONE;
     }
     
     return true;
