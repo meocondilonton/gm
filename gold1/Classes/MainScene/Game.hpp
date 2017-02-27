@@ -80,6 +80,8 @@ private:
       Widget*  getname(Widget* root);
     
     Vector<Sprite *> arrMouse ;
+    
+    Vector<Sprite *> arrGold ;
 };
 
 #endif /* Game_hpp */
