@@ -41,13 +41,15 @@ public:
     int diamondsCoe = 1;
     int power = 1;
     
-    static Mouse *create(  float scaleX, float scaleY , bool isBuyPotion, bool isBuyDiamonds, bool isStoneBook , MouseType type ,  DirectionType direction);
-    virtual bool init(  float scaleX, float scaleY,   bool isBuyPotion, bool isBuyDiamonds, bool isStoneBook  , MouseType type , DirectionType direction);
+    static Mouse *create(  float scaleX, float scaleY , bool isBuyPotion, bool isBuyDiamonds, bool isStoneBook , MouseType type ,  DirectionType direction , Vec2 postition);
+    virtual bool init(  float scaleX, float scaleY,   bool isBuyPotion, bool isBuyDiamonds, bool isStoneBook  , MouseType type , DirectionType direction ,  Vec2 postition);
     void goBack();
     void getDiamond();
     void createAnimation(MouseType type ,DirectionType direction);
     void randomPositionY( );
     void  checkPositionAndGoBack();
+    void  goToLeft();
+    void  goToRight();
     
 private:
      int random_Height ;

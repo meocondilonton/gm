@@ -31,11 +31,11 @@
 
 #define kTimeGo 0.5
 
-Mouse *Mouse::create(  float scaleX, float scaleY, bool isBuyPotion, bool isBuyDiamonds, bool isStoneBook  , MouseType type , DirectionType direction)
+Mouse *Mouse::create(  float scaleX, float scaleY, bool isBuyPotion, bool isBuyDiamonds, bool isStoneBook  , MouseType type , DirectionType direction , Vec2 postition)
 {
     Mouse *mouse = new Mouse();
     
-    if (mouse && mouse->init(  scaleX, scaleY, isBuyPotion, isBuyDiamonds, isStoneBook ,type ,direction)) {
+    if (mouse && mouse->init(  scaleX, scaleY, isBuyPotion, isBuyDiamonds, isStoneBook ,type ,direction , postition)) {
         mouse->autorelease();
         return mouse;
     } else {
@@ -64,15 +64,45 @@ void Mouse::goBack(){
         this->setRotationSkewY( 0);
         
     }
- auto screenSize = Director::getInstance()->getWinSize();
+    auto screenSize = Director::getInstance()->getWinSize();
     this->stopAllActions();
     this->createAnimation(this->type, this->directionType);
 }
 
+void Mouse::goToLeft(){
+    
+    if(this->directionType == DirectionType::LEFT){
+    }else{
+        this->directionType = DirectionType::LEFT;
+        this->setRotationSkewY( 0);
+        
+    }
+    auto screenSize = Director::getInstance()->getWinSize();
+    this->stopAllActions();
+    this->createAnimation(this->type, this->directionType);
+}
+
+void Mouse::goToRight(){
+    
+    if(this->directionType == DirectionType::LEFT){
+        this->directionType = DirectionType::RIGHT;
+        this->setRotationSkewY( 180);
+        
+    }else{
+        
+    }
+    auto screenSize = Director::getInstance()->getWinSize();
+    this->stopAllActions();
+    this->createAnimation(this->type, this->directionType);
+}
+
+
 void Mouse::checkPositionAndGoBack(){
      auto screenSize = Director::getInstance()->getWinSize();
-    if(this->getPosition().x < -50 || this->getPosition().x > screenSize.width + 50){
-        this->goBack();
+    if(this->getPosition().x < -50 ){
+        this->goToRight();
+    }else if(this->getPosition().x > screenSize.width + 50){
+        this->goToLeft();
     }
 }
 
@@ -105,7 +135,7 @@ void Mouse::createAnimation( MouseType type ,DirectionType direction){
                 this->checkPositionAndGoBack();
             });
               auto denta_x = direction == DirectionType::LEFT ? 10 : -10;
-              auto movement = MoveBy::create(kTimeGo,  Vec2( denta_x,0));
+              auto movement = MoveBy::create(kTimeGo*0.75,  Vec2( denta_x,0));
             auto sequence = Sequence::create(movement, callbackChangePosition, NULL);
             this->runAction(RepeatForever::create(sequence));
         }
@@ -134,7 +164,7 @@ void Mouse::createAnimation( MouseType type ,DirectionType direction){
             });
  
             auto denta_x = direction == DirectionType::LEFT ? 10 : -10;
-            auto movement = MoveBy::create(kTimeGo*0.75,  Vec2( denta_x,0));
+            auto movement = MoveBy::create(kTimeGo,  Vec2( denta_x,0));
             
             auto sequence = Sequence::create(movement, callbackChangePosition , NULL);
             this->runAction(RepeatForever::create(sequence));
@@ -169,7 +199,7 @@ void Mouse::createAnimation( MouseType type ,DirectionType direction){
     }
 }
 
-bool Mouse::init(  float scaleX, float scaleY , bool isBuyPotion, bool isBuyDiamonds, bool isStoneBook  , MouseType type , DirectionType direction)
+bool Mouse::init(  float scaleX, float scaleY , bool isBuyPotion, bool isBuyDiamonds, bool isStoneBook  , MouseType type , DirectionType direction , Vec2 postition)
 {
     this->type = type;
     this->directionType = direction;
@@ -192,9 +222,9 @@ bool Mouse::init(  float scaleX, float scaleY , bool isBuyPotion, bool isBuyDiam
     this->setAnchorPoint(Vec2(0.5, 0.5));
      auto screenSize = Director::getInstance()->getWinSize();
    
-    auto start_x = direction == DirectionType::LEFT ?  -20 : screenSize.width + 20;
-    this->randomPositionY();
-    this->setPosition(start_x, random_Height);
+//    auto start_x = direction == DirectionType::LEFT ?  -20 : screenSize.width + 20;
+//    this->randomPositionY();
+    this->setPosition(postition.x, postition.y);
  
     this->createAnimation(type , this->directionType);
     
