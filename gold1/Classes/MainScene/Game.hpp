@@ -75,14 +75,17 @@ private:
     bool physicsBegin(PhysicsContact &contact);
     void pullGold(PhysicsContact &contact);
     void pullMouse(PhysicsContact &contact);
+    void pullTnt(PhysicsContact &contact); 
     void mouseColision(PhysicsContact &contact);
     Vec2 repositionMouse( Mouse::DirectionType direction);
+    void  showTntElip(Vec2 pos );
     
       Widget*  getname(Widget* root);
     
     Vector<Sprite *> arrMouse ;
-    
     Vector<Sprite *> arrGold ;
+    Vector<Sprite *> arrTnt ;
+    
 };
 
 #endif /* Game_hpp */

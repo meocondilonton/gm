@@ -19,7 +19,8 @@
 #define tagMouse 2000
 #define tagHook 59
 #define tagMiddleCircle 500
-
+#define tagTnt 1500
+ 
 
 // Score
 #define kMouseScore 100
@@ -67,6 +68,7 @@ Scene *Game::createScene(bool isBuyBomb, bool isBuyPotion, bool isBuyDiamonds, b
     scene->addChild(node);
     
     SpriteFrameCache::getInstance()->addSpriteFramesWithFile("res/Resources/level-sheet.plist");
+    SpriteFrameCache::getInstance()->addSpriteFramesWithFile("res/Resources/explosion-sheet.plist");
     
     return scene;
 }
@@ -224,6 +226,7 @@ bool Game::physicsBegin(cocos2d::PhysicsContact &contact)
             // 碰到金块, 打开钩子
             if (!isOpenHook) {
                 this->pullGold(contact);
+                 this->pullTnt(contact);
                 this->pullMouse(contact);
             }
         } else {
@@ -305,6 +308,24 @@ void Game::loadStageInfo()
 //        subNode->setTag(tagGold);
 //    }
     
+    //-------Tnt---------
+    this->arrTnt = Vector<Sprite *>();
+    //create  animation mouse
+    auto tnt = Gold::create("TNT.png", 1, 1, 0, true, true, true);
+    tnt->setPosition(Vec2( 300, 250));
+    this->addChild(tnt);
+    arrTnt.pushBack(tnt);
+    for (Sprite *subNode : arrTnt) {
+        Size bodySize = Size(subNode->getContentSize().width * subNode->getScaleX()/2, subNode->getContentSize().height * subNode->getScaleY()/2);
+        
+        PhysicsBody *mouseBody = PhysicsBody::createEdgeBox(bodySize);
+        
+        mouseBody->setCategoryBitmask(10);
+        mouseBody->setCollisionBitmask(10);
+        mouseBody->setContactTestBitmask(10);
+        subNode->addComponent(mouseBody);
+        subNode->setTag(tagTnt);
+    }
     
     //-------Mouse---------
     
@@ -482,7 +503,57 @@ void Game::pullGold(cocos2d::PhysicsContact &contact)
         
 //          CCLOG("intag: %d",contact.getShapeB()->getBody()->getNode()->getTag());
     }
+    
+}
+
+void Game::pullTnt(cocos2d::PhysicsContact &contact)
+    {
+        // 钓到了东西
+        //    CCLOG("tag: %d",contact.getShapeB()->getBody()->getNode()->getTag());
+        if((contact.getShapeB()->getBody()->getNode()->getTag() == tagTnt && (contact.getShapeA()->getBody()->getNode()->getTag() == tagHook   )) ||
+           (contact.getShapeA()->getBody()->getNode()->getTag() == tagTnt && (contact.getShapeB()->getBody()->getNode()->getTag() == tagHook   ))
+           ){
+            isOpenHook = true;
+            auto gold = contact.getShapeB()->getBody()->getNode();
+            this->showTntElip(gold->getPosition());
+            goldSprite = Gold::create("TNT-fragment", gold->getScaleX(), gold->getScaleY(), gold->getRotation(), isBuyPotion, isBuyDiamonds, isBuyStoneBook);
+            middleCircle->addChild(goldSprite);
+            contact.getShapeB()->getBody()->removeFromWorld();
+            this->backSpeed = goldSprite->backSpeed;
+            leftHook->runAction(RotateTo::create(0.05, -goldSprite->hookRote));
+            rightHook->runAction(RotateTo::create(0.05, goldSprite->hookRote));
+            
+            gold->getPhysicsBody()->setEnabled(false);
+            gold->setVisible(false);
+            
+        }
    
+}
+
+void Game::showTntElip( Vec2 pos){
+   
+    Sprite *elip =  Sprite::createWithSpriteFrameName("tnt-explosion-0.png");
+    elip->setPosition(pos);
+    Vector<SpriteFrame*> animFrames(9);
+    char str[100] = {0};
+    for(int i = 0; i < 9; i++)
+    {
+        sprintf(str, "tnt-explosion-%d.png",i);
+        auto frame = SpriteFrameCache::getInstance()->getSpriteFrameByName(str);
+        animFrames.pushBack(frame);
+    }
+    
+    auto animation = Animation::createWithSpriteFrames(animFrames, 0.2f);
+    auto animate = Animate::create(animation);
+    elip->runAction(Sequence::create(animate , RemoveSelf::create(), nullptr) );
+    this->addChild(elip);
+    
+//    auto runCallback =  CallFunc::create([&, this](){
+//        
+//        elip->removeFromParent();
+//    });
+//    this->runAction(Sequence::create(DelayTime::create(1.6), runCallback, nullptr));
+
 }
 
 void Game::subRopeHeight(float dt)

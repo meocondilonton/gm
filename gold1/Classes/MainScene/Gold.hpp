@@ -24,7 +24,8 @@ public:
         MIDDLESTONE,
         BIGSTONE,
         GOLDBAG,
-        DIAMONDS
+        DIAMONDS,
+        TNT
     };
     
     GoldType goldType = GoldType::SMALLSTONE;

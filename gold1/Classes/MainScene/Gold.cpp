@@ -16,6 +16,7 @@
 #define kMiddleStoneScore 50
 #define kBigStoneScore 75
 #define kDiamondScore 500
+#define kTntScore 10
 #define kBagScore (arc4random_uniform(200) + 50)
 
 // Speed
@@ -27,6 +28,7 @@
 #define kBigStoneBackSpeed 1.5
 #define kBagBackSpeed 3
 #define kDiamondSpeed 3
+#define kTntSpeed 4
 
 Gold *Gold::create(string name, float scaleX, float scaleY, float rotate, bool isBuyPotion, bool isBuyDiamonds, bool isStoneBook)
 {
@@ -143,7 +145,22 @@ bool Gold::init(string name, float scaleX, float scaleY, float rotate, bool isBu
         backSpeed = kDiamondSpeed * power;
         this->setPosition(6.38, -26.91);
         this->goldType = GoldType::DIAMONDS;
-    } else {
+    }
+    else if (name == "TNT.png") {
+        hookRote = 6;
+        score = kTntScore * stoneCoe;
+        backSpeed = kTntSpeed * power;
+        this->setPosition(6.38, -26.91);
+        this->goldType = GoldType::TNT;
+    }
+    else if (name == "TNT-fragment.png") {
+        hookRote = 6;
+        score = kTntScore * stoneCoe;
+        backSpeed = kTntSpeed * power;
+        this->setPosition(6.38, -26.91);
+        this->goldType = GoldType::TNT;
+    }
+    else {
         hookRote = 0;
         backSpeed = 10;
         score = 0;
