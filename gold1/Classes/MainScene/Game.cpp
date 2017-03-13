@@ -408,7 +408,7 @@ void Game::mouseColision(cocos2d::PhysicsContact &contact)
     else if(contact.getShapeB()->getBody()->getNode()->getTag() == tagMouse && contact.getShapeA()->getBody()->getNode()->getTag() == tagMouse){
              auto mouse = contact.getShapeA()->getBody()->getNode();
 //             dynamic_cast<Mouse*>(mouse)->goBack();
-            
+        
             auto mouseB = contact.getShapeB()->getBody()->getNode();
 //            dynamic_cast<Mouse*>(mouseB)->goBack();
         }
