@@ -263,8 +263,8 @@ void Game::loadStageInfo()
     
     for (Node *subNode : golds) {
         Size bodySize = Size(subNode->getContentSize().width * subNode->getScaleX(), subNode->getContentSize().height * subNode->getScaleY());
-//        PhysicsBody *goldBody = PhysicsBody::createEdgeBox(bodySize);
-         PhysicsBody *goldBody = PhysicsBody::createCircle(bodySize.width/2);
+        PhysicsBody *goldBody = PhysicsBody::createEdgeBox(bodySize);
+//         PhysicsBody *goldBody = PhysicsBody::createCircle(bodySize.width/2);
        
 //           CCLOG(" subNode->getScaleX(): %f",  subNode->getScaleX());
 //           CCLOG(" subNode->getScaleY(): %f",  subNode->getScaleY());
@@ -313,35 +313,40 @@ void Game::loadStageInfo()
     auto mouse = Mouse::create(1, 1, true, true, true, Mouse::MouseType::EMPTYMOUSE , Mouse::DirectionType::LEFT);
     this->addChild(mouse);
     arrMouse.pushBack(mouse);
+    mouse->setPosition(this->repositionMouse(mouse->getPosition()));
     
-    auto mousegame = Mouse::create(1, 1,  true, true, true, Mouse::MouseType::MOUSEWITHDIAMOND , Mouse::DirectionType::RIGHT);
+    auto mousegame = Mouse::create(1, 1,  true, true, true, Mouse::MouseType::EMPTYMOUSE , Mouse::DirectionType::RIGHT);
     this->addChild(mousegame);
     arrMouse.pushBack(mousegame);
-
+    mousegame->setPosition(this->repositionMouse(mousegame->getPosition()));
     
     auto mouse2 = Mouse::create(1, 1, true, true, true, Mouse::MouseType::EMPTYMOUSE , Mouse::DirectionType::LEFT);
     this->addChild(mouse2);
     arrMouse.pushBack(mouse2);
+    mouse2->setPosition(this->repositionMouse(mouse2->getPosition()));
     
     auto mousegame2 = Mouse::create(1, 1,  true, true, true, Mouse::MouseType::MOUSEWITHDIAMOND , Mouse::DirectionType::RIGHT);
     this->addChild(mousegame2);
     arrMouse.pushBack(mousegame2);
+    mousegame2->setPosition(this->repositionMouse(mousegame2->getPosition()));
     
     auto mouse3 = Mouse::create(1, 1, true, true, true, Mouse::MouseType::EMPTYMOUSE , Mouse::DirectionType::RIGHT);
     this->addChild(mouse3);
     arrMouse.pushBack(mouse3);
+    mouse3->setPosition(this->repositionMouse(mouse3->getPosition()));
     
     auto mouse4 = Mouse::create(1, 1, true, true, true, Mouse::MouseType::EMPTYMOUSE , Mouse::DirectionType::RIGHT);
     this->addChild(mouse4);
     arrMouse.pushBack(mouse4);
+    mouse4->setPosition(this->repositionMouse(mouse4->getPosition()));
     
     for (Node *subNode : arrMouse) {
         Size bodySize = Size(subNode->getContentSize().width * subNode->getScaleX(), subNode->getContentSize().height * subNode->getScaleY());
-        CCLOG(" subNode->getScaleX(): %f",  subNode->getScaleX());
-        CCLOG(" subNode->getScaleY(): %f",  subNode->getScaleY());
-        
-        CCLOG(" subNode->getContentSize().width: %f",  subNode->getContentSize().width);
-        CCLOG(" subNode->getContentSize().height: %f",  subNode->getContentSize().height);
+//        CCLOG(" subNode->getScaleX(): %f",  subNode->getScaleX());
+//        CCLOG(" subNode->getScaleY(): %f",  subNode->getScaleY());
+//        
+//        CCLOG(" subNode->getContentSize().width: %f",  subNode->getContentSize().width);
+//        CCLOG(" subNode->getContentSize().height: %f",  subNode->getContentSize().height);
         PhysicsBody *mouseBody = PhysicsBody::createEdgeBox(bodySize);
         mouseBody->setCategoryBitmask(10);
         mouseBody->setCollisionBitmask(10);
@@ -352,6 +357,15 @@ void Game::loadStageInfo()
     
 }
 
+Vec2 Game::repositionMouse(Vec2 mouse){
+    for(Node *subNode : arrMouse){
+        if(subNode->getPosition().x  == mouse.x && subNode->getPosition().y  == mouse.y){
+            Vec2 newPos = Vec2(mouse.x + 50 , mouse.y);
+            return newPos;
+        }
+    }
+    return mouse;
+}
 
 void Game::mouseColision(cocos2d::PhysicsContact &contact)
 {
@@ -361,21 +375,22 @@ void Game::mouseColision(cocos2d::PhysicsContact &contact)
     if(contact.getShapeB()->getBody()->getNode()->getTag() == tagMouse && contact.getShapeA()->getBody()->getNode()->getTag() == tagGold )
         {
              auto mouse = contact.getShapeB()->getBody()->getNode();
-            auto gold = contact.getShapeA()->getBody()->getNode();
-             CCLOG("1 gold->getName(): %s", gold->getName().c_str());
+             auto gold = contact.getShapeA()->getBody()->getNode();
+//             CCLOG("1 gold->getName(): %s", gold->getName().c_str());
             
                     if(  gold->getName().compare("diamond.png") == 0){
                         dynamic_cast<Mouse*>(mouse)->getDiamond();
                         gold->getPhysicsBody()->setEnabled(false);
                         gold->setVisible(false);
                     }  else  {
+                         CCLOG("1 mouse goback");
                         dynamic_cast<Mouse*>(mouse)->goBack();
                      }
         }
     else if(contact.getShapeB()->getBody()->getNode()->getTag() == tagGold && contact.getShapeA()->getBody()->getNode()->getTag() == tagMouse){
             auto mouse = contact.getShapeA()->getBody()->getNode();
             auto gold = contact.getShapeB()->getBody()->getNode();
-           CCLOG("2 gold->getName(): %s", gold->getName().c_str());
+//           CCLOG("2 gold->getName(): %s", gold->getName().c_str());
         
                         if( gold->getName().compare("diamond.png") == 0){
                             dynamic_cast<Mouse*>(mouse)->getDiamond();

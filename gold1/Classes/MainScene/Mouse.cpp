@@ -29,7 +29,7 @@
 #define kBagBackSpeed 3
 #define kDiamondSpeed 3
 
-#define kTimeGo 90
+#define kTimeGo 0.5
 
 Mouse *Mouse::create(  float scaleX, float scaleY, bool isBuyPotion, bool isBuyDiamonds, bool isStoneBook  , MouseType type , DirectionType direction)
 {
@@ -50,38 +50,39 @@ void Mouse::getDiamond(){
     this->type =  MouseType::MOUSEWITHDIAMOND;
     
     this->stopAllActions();
-    this->createAnimation(this->type);
+    this->createAnimation(this->type, this->directionType);
 }
 
 void Mouse::goBack(){
-    int space = 0;
+    
     if(this->directionType == DirectionType::LEFT){
         this->directionType = DirectionType::RIGHT;
         this->setRotationSkewY( 180);
-        space = -30;
+        
     }else{
          this->directionType = DirectionType::LEFT;
         this->setRotationSkewY( 0);
-         space = 30;
+        
     }
-   
-    
-    auto screenSize = Director::getInstance()->getWinSize();
-    this->start_x =   this->getPosition().x + space;
-    this->setPosition( Vec2( this->start_x, this->getPosition().y));
-    this->end_x =   this->directionType ==  DirectionType::LEFT ?   (screenSize.width + 20) * 2 : -20 -  (screenSize.width + 20) ;
+ auto screenSize = Director::getInstance()->getWinSize();
     this->stopAllActions();
-    this->createAnimation(this->type);
+    this->createAnimation(this->type, this->directionType);
 }
 
+void Mouse::checkPositionAndGoBack(){
+     auto screenSize = Director::getInstance()->getWinSize();
+    if(this->getPosition().x < -50 || this->getPosition().x > screenSize.width + 50){
+        this->goBack();
+    }
+}
 
 void Mouse::randomPositionY(){
     auto screenSize = Director::getInstance()->getWinSize();
-    int ran = std::rand() % static_cast<int>(10);
-    this->random_Height =   ((screenSize.height - 260 )/10) * ran + 26   ;
+    int ran = std::rand() % static_cast<int>(7);
+    this->random_Height =   ((screenSize.height - 260 )/7) * ran + 26   ;
 }
 
-void Mouse::createAnimation( MouseType type ){
+void Mouse::createAnimation( MouseType type ,DirectionType direction){
     switch (type) {
         case MouseType::EMPTYMOUSE:
         {
@@ -101,14 +102,11 @@ void Mouse::createAnimation( MouseType type ){
             this->runAction(RepeatForever::create(animate));
             
             auto callbackChangePosition =  CallFunc::create([&, this](){
-                log("Rotated!");
-                this->randomPositionY();
-//                auto screenSize = Director::getInstance()->getWinSize();
-//                this->random_Height =  std::rand() % static_cast<int>(screenSize.height - 100) + 50 ;
+                this->checkPositionAndGoBack();
             });
-            auto movement = MoveTo::create(kTimeGo, Vec2( this->end_x,random_Height));
-            auto resetPosition = MoveTo::create(0, Vec2(this->start_x,random_Height));
-            auto sequence = Sequence::create(movement, callbackChangePosition, resetPosition, NULL);
+              auto denta_x = direction == DirectionType::LEFT ? 10 : -10;
+              auto movement = MoveBy::create(kTimeGo,  Vec2( denta_x,0));
+            auto sequence = Sequence::create(movement, callbackChangePosition, NULL);
             this->runAction(RepeatForever::create(sequence));
         }
             
@@ -131,14 +129,14 @@ void Mouse::createAnimation( MouseType type ){
             this->runAction(RepeatForever::create(animate));
             
             auto callbackChangePosition =  CallFunc::create([&, this](){
-                log("Rotated!");
-                this->randomPositionY();
-//                auto screenSize = Director::getInstance()->getWinSize();
-//                this->random_Height =  std::rand() % static_cast<int>(screenSize.height - 100) + 50 ;
+ 
+                this->checkPositionAndGoBack();
             });
-            auto movement = MoveTo::create(kTimeGo*0.75, Vec2(this->end_x,random_Height));
-            auto resetPosition = MoveTo::create(0, Vec2(this->start_x,random_Height));
-            auto sequence = Sequence::create(movement, callbackChangePosition ,resetPosition, NULL);
+ 
+            auto denta_x = direction == DirectionType::LEFT ? 10 : -10;
+            auto movement = MoveBy::create(kTimeGo*0.75,  Vec2( denta_x,0));
+            
+            auto sequence = Sequence::create(movement, callbackChangePosition , NULL);
             this->runAction(RepeatForever::create(sequence));
         }
             break;
@@ -180,8 +178,7 @@ bool Mouse::init(  float scaleX, float scaleY , bool isBuyPotion, bool isBuyDiam
     if (isBuyPotion) power = 1.2;
     if (isBuyDiamonds) diamondsCoe = 3;
     if (isStoneBook) stoneCoe = 3;
-    
-    int scale = ((int)(scaleX * 100));
+ 
     this->setScale(scaleX, scaleY);
   
     
@@ -192,20 +189,14 @@ bool Mouse::init(  float scaleX, float scaleY , bool isBuyPotion, bool isBuyDiam
     score = kMouseScore;
     backSpeed = kSmallGoldBackSpeed * power;
     hookRote = 16;
-//    this->setPosition(7.52, -21.24);
     this->setAnchorPoint(Vec2(0.5, 0.5));
      auto screenSize = Director::getInstance()->getWinSize();
    
-    this->random_Width = direction == DirectionType::LEFT ?  -20 : screenSize.width + 20;
+    auto start_x = direction == DirectionType::LEFT ?  -20 : screenSize.width + 20;
     this->randomPositionY();
-//    this->random_Height = std::rand() % static_cast<int>(screenSize.height - 100) + 50 ;
-    this->start_x =  direction ==  DirectionType::LEFT ?  -20 : screenSize.width + 20;
-    this->end_x =  direction ==  DirectionType::LEFT ?   (screenSize.width + 20) * 2 : -20 -  (screenSize.width + 20) ;
-    
-    this->setPosition(random_Width, random_Height);
-
-//    CCLOG("random_number: %d", random_Width  );
-    this->createAnimation(type);
+    this->setPosition(start_x, random_Height);
+ 
+    this->createAnimation(type , this->directionType);
     
  
     

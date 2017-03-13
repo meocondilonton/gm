@@ -76,6 +76,7 @@ private:
     void pullGold(PhysicsContact &contact);
     void pullMouse(PhysicsContact &contact);
     void mouseColision(PhysicsContact &contact);
+    Vec2 repositionMouse( Vec2 mouse);
     
       Widget*  getname(Widget* root);
     

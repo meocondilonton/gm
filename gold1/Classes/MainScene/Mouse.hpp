@@ -45,16 +45,13 @@ public:
     virtual bool init(  float scaleX, float scaleY,   bool isBuyPotion, bool isBuyDiamonds, bool isStoneBook  , MouseType type , DirectionType direction);
     void goBack();
     void getDiamond();
-    void createAnimation(MouseType type );
+    void createAnimation(MouseType type ,DirectionType direction);
     void randomPositionY( );
+    void  checkPositionAndGoBack();
     
 private:
-    
+     int random_Height ;
    
-    int random_Width;
-    int random_Height ;
-    int start_x;
-    int end_x;
     
 };
 
