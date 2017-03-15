@@ -20,7 +20,9 @@
 #define tagHook 59
 #define tagMiddleCircle 500
 #define tagTnt 1500
- 
+
+// distance tnt
+#define kdistanceTnt 200
 
 // Score
 #define kMouseScore 100
@@ -261,25 +263,14 @@ void Game::loadStageInfo()
     this->addChild(goldCsb);
 
     auto goldsLayout = Helper::seekWidgetByName(static_cast<Widget *>(goldCsb), "goldPanel");
-//    goldsLayout->removeAllChildren();
+    this->arrGold = Vector<Node *>();
     Vector<Node *> golds = goldsLayout->getChildren();
     
     for (Node *subNode : golds) {
+        arrGold.pushBack(subNode);
         Size bodySize = Size(subNode->getContentSize().width * subNode->getScaleX(), subNode->getContentSize().height * subNode->getScaleY());
         PhysicsBody *goldBody = PhysicsBody::createEdgeBox(bodySize);
-//         PhysicsBody *goldBody = PhysicsBody::createCircle(bodySize.width/2);
-       
-//           CCLOG(" subNode->getScaleX(): %f",  subNode->getScaleX());
-//           CCLOG(" subNode->getScaleY(): %f",  subNode->getScaleY());
-//        
-//           CCLOG(" subNode->getContentSize().width: %f",  subNode->getContentSize().width);
-//           CCLOG(" subNode->getContentSize().height: %f",  subNode->getContentSize().height);
-
-        
-//        Size bodySize = subNode->getBoundingBox().size;
-//        Size(subNode->getContentSize().width  , subNode->getContentSize().height  );
-//          PhysicsBody *goldBody = PhysicsBody::createEdgeBox(bodySize);
-        
+ 
         goldBody->setCategoryBitmask(10);
         goldBody->setCollisionBitmask(10);
         goldBody->setContactTestBitmask(10);
@@ -534,6 +525,7 @@ void Game::showTntElip( Vec2 pos){
    
     Sprite *elip =  Sprite::createWithSpriteFrameName("tnt-explosion-0.png");
     elip->setPosition(pos);
+    this->removeArrObjectNearPos(pos);
     Vector<SpriteFrame*> animFrames(9);
     char str[100] = {0};
     for(int i = 0; i < 9; i++)
@@ -548,12 +540,27 @@ void Game::showTntElip( Vec2 pos){
     elip->runAction(Sequence::create(animate , RemoveSelf::create(), nullptr) );
     this->addChild(elip);
     
-//    auto runCallback =  CallFunc::create([&, this](){
-//        
-//        elip->removeFromParent();
-//    });
-//    this->runAction(Sequence::create(DelayTime::create(1.6), runCallback, nullptr));
+ 
+}
 
+void Game::removeArrObjectNearPos( Vec2 pos){
+    Vector<Node *> arrObject = this->getArrObjectNearPos(pos);
+    for (Node *subNode : arrObject) {
+        subNode->removeFromParent();
+    }
+}
+
+Vector<Node *> Game::getArrObjectNearPos( Vec2 pos){
+    Vector<Node *> arrObject = Vector<Node *>();
+     for (Node *subNode : arrGold) {
+         float width =  subNode->getPosition().x - pos.x;
+         float height  = subNode->getPosition().y - pos.y;
+         if(width*width + height*height < kdistanceTnt*kdistanceTnt){
+             arrGold.eraseObject(subNode);
+             arrObject.pushBack(subNode);
+         }
+     }
+    return arrObject;
 }
 
 void Game::subRopeHeight(float dt)

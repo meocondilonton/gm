@@ -79,11 +79,13 @@ private:
     void mouseColision(PhysicsContact &contact);
     Vec2 repositionMouse( Mouse::DirectionType direction);
     void  showTntElip(Vec2 pos );
+    Vector<Node *> getArrObjectNearPos( Vec2 pos);
+    void removeArrObjectNearPos( Vec2 pos);
     
-      Widget*  getname(Widget* root);
+    Widget*  getname(Widget* root);
     
     Vector<Sprite *> arrMouse ;
-    Vector<Sprite *> arrGold ;
+    Vector<Node *> arrGold ;
     Vector<Sprite *> arrTnt ;
     
 };
