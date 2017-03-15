@@ -540,6 +540,7 @@ void Game::showTntElip( Vec2 pos){
     elip->runAction(Sequence::create(animate , RemoveSelf::create(), nullptr) );
     this->addChild(elip);
     
+    SoundTool::getInstance()->playEffect("res/music/bomb.mp3");
  
 }
 
